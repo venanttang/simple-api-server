@@ -16,3 +16,6 @@ poetry.lock
 dist/
 build/
 *.egg-info/
+
+# Application
+*.db*
