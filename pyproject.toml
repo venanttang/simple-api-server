@@ -6,7 +6,7 @@ name = "simpleapiserver"
 version = "0.1.0"
 description = "This is a very Simple API Server project."
 authors = [
-    {name = "Your Name",email = "you@example.com"}
+    {name = "venanttang",email = "16545531+venanttang@users.noreply.github.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.13"
