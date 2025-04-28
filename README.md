@@ -76,6 +76,28 @@ There you go. The Simple API Server is started up successfully. You can start fe
 ## API Design
 For [API Design](API_DESIGN.md), please check the link accordingly.
 
+## Unit Test
+Run the following command.
+'''bash
+pytest
+'''
+
+Expected to see.
+```
+% pytest   
+============================== test session starts ==================================
+platform darwin -- Python 3.13.3, pytest-8.3.5, pluggy-1.5.0
+rootdir: /Users/venant/CodeLab/SimpleAPIServer
+configfile: pyproject.toml
+plugins: anyio-4.9.0, asyncio-0.26.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 2 items                                                                                                                                                                                                                                 
+
+tests/test_main.py ..                                                                                                                                                                                                                       [100%]
+
+================================= 2 passed in 0.20s =================================
+```
+
 ## Roadmap
 - Authorization or API gateway would be needed
 - API rate limit per IP would be needed and make it configurable so that a certain API may be expected to have a higher traffic rate than others
