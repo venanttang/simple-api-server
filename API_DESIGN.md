@@ -100,15 +100,13 @@ Content-Type: application/json
 
 ### Response
 
-- **Status Code:** `201 Created`
+- **Status Code:** `201`
 - **Body:**
 
 ```json
 {
-  "id": 8,
   "label": "cat’s child",
   "parentId": 4,
-  "status": "created"
 }
 ```
 
