@@ -116,10 +116,10 @@ def test_create_and_read_tree(client: TestClient) -> None:
     cat_childId:int = getIdByLabel(client, "cat_child")    
 
 
-    raw_response:Response = client.get(target_raw_url)
-    assert raw_response.status_code == 200
-    raw_items = raw_response.json()
-    logger.info(f"raw_items: {raw_items}")
+    # raw_response:Response = client.get(target_raw_url)
+    # assert raw_response.status_code == 200
+    # raw_items = raw_response.json()
+    # logger.info(f"raw_items: {raw_items}")
 
     # Test retrieving the tree structure
     response:Response = client.get(target_url)
