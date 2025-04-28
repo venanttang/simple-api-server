@@ -32,6 +32,11 @@ Step 3: Install it and it will install all the required libraries accordingly.
 pip install -r requirements.txt
 ```
 
+Step 4: Install uvicorn
+```bash
+pip install uvicorn
+```
+
 
 
 ## Usage
