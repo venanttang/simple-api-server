@@ -147,12 +147,12 @@ async def create_item(item: TreeItem):
 # GET: List Raw Items (debugging only)
 # ---------------------
 # TODO: remove this endpoint later...
-@app.get("/api/raw", response_model=List[TreeItem])
-async def read_raw_items(session: Session = Depends(get_session)):
-    logger.info("Received request to list items.")
-    items = session.exec(select(TreeItem)).all()
-    logger.info(f"Items found: {items}")
-    return items
+# @app.get("/api/raw", response_model=List[TreeItem])
+# async def read_raw_items(session: Session = Depends(get_session)):
+#     logger.info("Received request to list items.")
+#     items = session.exec(select(TreeItem)).all()
+#     logger.info(f"Items found: {items}")
+#     return items
 
 # ---------------------
 # GET: List Items
