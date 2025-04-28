@@ -6,9 +6,9 @@ For simplicity and time in budget, we would use SQLite for demo purpose. With we
 We introduce a write queue and other performance optimization in making it a sound choice for IoT device or relatively lower resource environment.
 - For resource-constrained environment (e.g. IoT or non-high traffic API server), we picked SQLite as it is serverless and light in weight.
 It is ideal for low resource consumption and simple in setup.
-- For higher usage on the API server (e.g. microservices), it is easy for our code to switch to use MySQL or PostgreSQL with SQLModel by changing the create_engine() in the code. For detail, please refer to the documentation on how to integrate of that specific SQL server accordingly.
+- For higher usage on the API server (e.g. microservices), it would be better to switch to MySQL or PostgreSQL. With the help of SQLModel, it helps us in building a loosely coupled DB connection by just changing the create_engine() string in the code. 
 
-As said, it is better to integrate and use MySQL or other SQL server for higher traffic use cases.
+For detail, please refer to the documentation on how to integrate of that specific SQL server accordingly.
 
 
 ## Requirements
