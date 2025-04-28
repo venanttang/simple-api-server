@@ -13,7 +13,6 @@ For detail, please refer to the documentation on how to integrate of that specif
 
 ## Requirements
 - python3.13+
-##### Note: This project was developed and maintained on MacOS. However, it should run fine on Linux with Python 3.13+. If not, please contact me for the fix. You are advised to use 'venv' for virtual environment for python. Please install & activate it if you haven't done that yet. 
 
 
 ## Installation
