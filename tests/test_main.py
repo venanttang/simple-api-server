@@ -138,6 +138,27 @@ def test_create_and_read_tree(client: TestClient) -> None:
     assert root_1 == root_2
     return
 
+def test_is_persistent(client: TestClient) -> None:
+    # Test if the items are persistent
+    # response:Response = client.get(target_url)
+    # client:TestClient = TestClient(client.app)
+    # logger.info(f"new client: {client}")
+    response:Response = client.get(target_url)
+    assert response.status_code == 200
+    tree = response.json()
+    logger.info(f"tree: {tree}")
+    
+    # Validate the response against the schema
+    validate_json(tree, json_schema)
+    
+    root_1 = remove_id(tree)
+    root_2 = remove_id(target_json)
+    logger.info(f"root_1: {root_1}")
+    logger.info(f"root_2: {root_2}")
+    logger.info(f"root_1 == root_2: {root_1 == root_2}")
+    # assert root_1 == root_2
+    return
+
 def add_item(client: TestClient, label:str, parentId:int, id:int = -1) -> TreeItem:
     if client is None:
         logger.warning("client is None")

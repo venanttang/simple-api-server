@@ -82,6 +82,7 @@ For [API Design](API_DESIGN.md), please check the link accordingly.
 - Better support on switching between SQLite and MySQL (or PostgreSQL)
 - Make the max size of write queue to be configurable
 - Dynamically & smartly adjust the write queue size according to policy and available memory
+- Under SQLite, we should introduce one memory instance and one backup instance. With that, it will further help in terms of read & write performance of the database by using memory instance. The backup instance would be used as a master copy of the memory instance so that it would be updated periodically. 
 
 ## Contributing
 
