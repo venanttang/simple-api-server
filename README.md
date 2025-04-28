@@ -37,6 +37,11 @@ Step 4: Install uvicorn
 pip install uvicorn
 ```
 
+step 5: Install sqlalchemy
+'''bash
+pip install sqlalchemy
+```
+
 
 
 ## Usage
