@@ -1,14 +1,12 @@
 # simple-api-server
 
-This simple-api-server project is for my own learning on how to use fastAPI to build a very simple HTTP API server.
-
-For resource-constrained environment (e.g. IoT or non-high traffic API server), we picked SQLite as it is serverless and light in weight.
-It is ideal for low resource consumption and simple in setup. 
-
-For higher usage on the API server (e.g. microservices), it is easy for our code to switch to use MySQL or PostgreSQL with SQLModel by changing the create_engine() in the code. For detail, please refer to the documentation on how to integrate of that specific SQL server accordingly.
+This simple-api-server project is an exercise on how to build a simple HTTP API server quickly.
 
 For simplicity and time in budget, we would use SQLite for demo purpose. With well awareness of the limitation on SQLite in write performance,
 We introduce a write queue and other performance optimization in making it a sound choice for IoT device or relatively lower resource environment.
+- For resource-constrained environment (e.g. IoT or non-high traffic API server), we picked SQLite as it is serverless and light in weight.
+It is ideal for low resource consumption and simple in setup.
+- For higher usage on the API server (e.g. microservices), it is easy for our code to switch to use MySQL or PostgreSQL with SQLModel by changing the create_engine() in the code. For detail, please refer to the documentation on how to integrate of that specific SQL server accordingly.
 
 As said, it is better to integrate and use MySQL or other SQL server for higher traffic use cases.
 
