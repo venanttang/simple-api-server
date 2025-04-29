@@ -1,6 +1,7 @@
 import logging
 from fastapi.testclient import TestClient
 from httpx import Response
+from sqlalchemy import Engine
 from main import TreeItem
 from tests.json_helper import lookup_id_by_label, remove_id, validate_json
 
@@ -156,7 +157,7 @@ def test_is_persistent(client: TestClient) -> None:
     logger.info(f"root_1: {root_1}")
     logger.info(f"root_2: {root_2}")
     logger.info(f"root_1 == root_2: {root_1 == root_2}")
-    # assert root_1 == root_2
+    assert root_1 == root_2
     return
 
 def add_item(client: TestClient, label:str, parentId:int, id:int = -1) -> TreeItem:

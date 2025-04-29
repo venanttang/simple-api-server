@@ -1,6 +1,7 @@
 
 import logging
 from queue import Queue
+import queue
 from fastapi import Depends, FastAPI
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from typing import Optional, List
@@ -53,8 +54,11 @@ engine = create_engine(f"sqlite:///{sqlite_file}",
 
 # Execute a PRAGMA to enable WAL mode for SQLite to improve concurrency
 def enable_wal():
-    with engine.connect() as conn:
-        conn.execute(text("PRAGMA journal_mode=WAL;"))
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("PRAGMA journal_mode=WAL;"))
+    except Exception as e:
+        logger.error(f"Failed to enable WAL mode: {e.__class__.__name__}: {e}")
 
 enable_wal()
         
@@ -92,12 +96,12 @@ write_queue:Queue = Queue(maxsize=1000)  # 0 means infinite size
 def queue_up_for_write(item: TreeItem):
     logger.info(f"Queueing up item for write: {item}")
     try:
-        if item is not None:
+        if item is not None and write_queue is not None:
             write_queue.put_nowait(item)
             logger.info(f"Item queued successfully: {item}")
         return item
-    except Queue.Full:
-        logger.warning(f"Queue is full, item not added: {item}")
+    except queue.Full:
+        logger.error(f"Queue is full, item not added: {item}")
     except Exception as e:
         logger.error(f"Error queueing item: {item}, Error: {e}")
     return None
@@ -106,17 +110,18 @@ def process_write_queue():
     logger.info("Starting up write queue...")
     while True:
         try:
-            item:TreeItem = write_queue.get(timeout=5)
-            logger.info(f"Processing item: {item}")
-            if item is not None:
-                write_to_db(item)
+            if write_queue is not None:
+                item:TreeItem = write_queue.get()
+                logger.info(f"Processing item: {item}")
+                if item is not None:
+                    write_to_db(item)
         except Exception as e:
-            logger.error(f"Error processing item: {item}, Error: {e}")
+            logger.error(f"Error processing item: {item}, Error: {e.__class__.__name__}: {e}")
         finally:
             # Mark the task as done
             # This is important to avoid blocking the queue
-            write_queue.task_done()
-        logger.info(f"Item processed: {item}")
+            if write_queue is not None:
+                write_queue.task_done()
     return
         
 # Start the write queue processing in a separate thread
@@ -125,7 +130,7 @@ write_thread = threading.Thread(target=process_write_queue, daemon=True)
 logger.info("Starting write queue processing thread...")
 write_thread.start()
 
-def write_to_db(item: TreeItem):
+def write_to_db(item: TreeItem) -> TreeItem:
     if item is not None:
         logger.info(f"Writing item to DB: {item}")
         with Session(engine) as session:
