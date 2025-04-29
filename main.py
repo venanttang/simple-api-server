@@ -92,8 +92,9 @@ write_queue:Queue = Queue(maxsize=1000)  # 0 means infinite size
 def queue_up_for_write(item: TreeItem):
     logger.info(f"Queueing up item for write: {item}")
     try:
-        write_queue.put_nowait(item)
-        logger.info(f"Item queued successfully: {item}")
+        if item is not None:
+            write_queue.put_nowait(item)
+            logger.info(f"Item queued successfully: {item}")
         return item
     except Queue.Full:
         logger.warning(f"Queue is full, item not added: {item}")
@@ -105,9 +106,10 @@ def process_write_queue():
     logger.info("Starting up write queue...")
     while True:
         try:
-            item:TreeItem = write_queue.get()
+            item:TreeItem = write_queue.get(timeout=5)
             logger.info(f"Processing item: {item}")
-            write_to_db(item)
+            if item is not None:
+                write_to_db(item)
         except Exception as e:
             logger.error(f"Error processing item: {item}, Error: {e}")
         finally:
