@@ -97,8 +97,6 @@ def queue_up_for_write(item: TreeItem):
         return item
     except Queue.Full:
         logger.warning(f"Queue is full, item not added: {item}")
-    except Queue.Empty:
-        logger.warning(f"Queue is empty, item not added: {item}")
     except Exception as e:
         logger.error(f"Error queueing item: {item}, Error: {e}")
     return None
