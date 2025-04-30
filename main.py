@@ -244,7 +244,6 @@ def clone_children_recursively(itemToBeCloned:TreeItem, destinationParentId:int,
         except Exception as e:
             logger.error(f"Error writing cloned child item to DB: {e.__class__.__name__}: {e}")
             return []
-        logger.info(f"Cloned child item written to DB: {clonedChild}")
         
     logger.info(f"Finished cloning children of item {itemToBeCloned} to destination parent ID {destinationParentId}.")
     return
