@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 target_host = "http://localhost:8000"
 target_url = f"{target_host}/api/tree"
+target_clone_url = f"{target_host}/api/clone"
 target_raw_url = f"{target_host}/api/raw"
 
 json_schema = {
@@ -158,6 +159,19 @@ def test_is_persistent(client: TestClient) -> None:
     logger.info(f"root_2: {root_2}")
     logger.info(f"root_1 == root_2: {root_1 == root_2}")
     assert root_1 == root_2
+    return
+
+def test_cloned_items(client: TestClient) -> None:
+    response:Response = client.post(target_clone_url, params={"idNodeToBeCloned": 3, "destinationId": 7})
+    assert response.status_code == 200
+    tree = response.json()
+    logger.info(f"tree: {tree}")
+
+    response:Response = client.get(target_url)
+    assert response.status_code == 200
+    tree = response.json()
+    logger.info(f"tree after cloned: {tree}")
+    
     return
 
 def add_item(client: TestClient, label:str, parentId:int, id:int = -1) -> TreeItem:

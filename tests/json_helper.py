@@ -23,6 +23,21 @@ def remove_id(json_obj:json):
         return [remove_id(item) for item in json_obj]
     return json_obj
 
+def lookup_json_by_id(json_obj:json, id:int) -> json:
+    if isinstance(json_obj, dict):
+        # lookup 'id' field if it exists
+        result = {}
+        for key, value in json_obj.items():
+            logger.debug(f"key={key}, value={value}")
+            # Recursively lookup 'id' from nested objects
+            if key == 'id':
+                return result[key]
+        return result
+    elif isinstance(json_obj, list):
+        return [lookup_json_by_id(item) for item in json_obj]
+    return json_obj
+
+
 # Function to lookup 'id' based on 'label'
 def lookup_id_by_label(json_obj: json, label: str) -> int:
     if isinstance(json_obj, dict):

@@ -6,6 +6,7 @@ from fastapi import Depends, FastAPI
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from typing import Optional, List
 from contextlib import asynccontextmanager
+from tests.json_helper import lookup_json_by_id
 from tree_item_response import TreeItemResponse
 from sqlalchemy import text
 
@@ -192,3 +193,57 @@ def get_ItemResponseChildren(item: TreeItem, session: Session) -> List[TreeItemR
         children.append(get_ItemResponse(child, session))
     
     return children
+
+def get_item_by_id(itemId:int, session: Session) -> TreeItem:
+    item:TreeItem = session.exec(select(TreeItem).where(TreeItem.id == itemId)).first()
+    if item is None:
+        logger.info(f"Item with ID {itemId} NOT found")
+        return None
+    logger.info(f"Item with ID {itemId} found: {item}")
+    return item
+
+
+# @app.get("/api/tree", response_model=List[Item])
+@app.post("/api/clone")
+async def clone_items(idNodeToBeCloned:int, destinationId:int, session: Session = Depends(get_session)):
+    logger.info(f"Received request to clone item with ID {idNodeToBeCloned} to destination ID {destinationId}.")
+    itemToBeCloned:TreeItem = session.exec(select(TreeItem).where(TreeItem.id == idNodeToBeCloned)).first()
+    if itemToBeCloned is None:
+        logger.info(f"Item to be cloned NOT found")
+        return []
+
+    # Get the item to be cloned
+    logger.info(f"Item to be cloned found: {itemToBeCloned}")        
+    clone_children_recursively(itemToBeCloned, destinationId, session)
+    return
+
+def clone_children_recursively(itemToBeCloned:TreeItem, destinationId:int, session: Session):
+    logger.info(f"Cloning children of item {itemToBeCloned} to destination ID {destinationId}.")
+    
+    # Get the children of the item to be cloned
+    children:List[TreeItem] = session.exec(select(TreeItem).where(TreeItem.parentId == itemToBeCloned.id)).all()
+    if children is None:
+        logger.info(f"Children of the item to be cloned NOT found")
+        return []
+    if len(children) == 0:
+        logger.info(f"Children of the item to be cloned NOT found")
+        return []
+    
+    logger.info(f"Children of the item to be cloned found: {children}")
+    
+    # Clone the children items
+    for child in children:
+        logger.info(f"Cloning child item: {child}")
+        clonedChild:TreeItem = TreeItem(label=child.label, parentId=destinationId)
+        try:
+            logger.info(f"Setting the cloned child item {clonedChild} under {destinationId}")
+            write_to_db(clonedChild)
+        except Exception as e:
+            logger.error(f"Error writing cloned child item to DB: {e.__class__.__name__}: {e}")
+            return []
+        logger.info(f"Cloned child item written to DB: {clonedChild}")
+        
+        # Recursively clone the children of the child
+        clone_children_recursively(child, clonedChild.id, session)
+
+    return
