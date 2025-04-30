@@ -217,8 +217,8 @@ async def clone_items(idNodeToBeCloned:int, destinationId:int, session: Session 
     clone_children_recursively(itemToBeCloned, destinationId, session)
     return
 
-def clone_children_recursively(itemToBeCloned:TreeItem, destinationId:int, session: Session):
-    logger.info(f"Cloning children of item {itemToBeCloned} to destination ID {destinationId}.")
+def clone_children_recursively(itemToBeCloned:TreeItem, destinationParentId:int, session: Session):
+    logger.info(f"Cloning children of item {itemToBeCloned} to destination parent ID {destinationParentId}.")
     
     # Get the children of the item to be cloned
     children:List[TreeItem] = session.exec(select(TreeItem).where(TreeItem.parentId == itemToBeCloned.id)).all()
@@ -234,16 +234,17 @@ def clone_children_recursively(itemToBeCloned:TreeItem, destinationId:int, sessi
     # Clone the children items
     for child in children:
         logger.info(f"Cloning child item: {child}")
-        clonedChild:TreeItem = TreeItem(label=child.label, parentId=destinationId)
+        clonedChild:TreeItem = TreeItem(label=child.label, parentId=destinationParentId)
         try:
-            logger.info(f"Setting the cloned child item {clonedChild} under {destinationId}")
+            logger.info(f"Setting the cloned child item {clonedChild} under {destinationParentId}")
             write_to_db(clonedChild)
+
+            # Recursively clone the children of the child
+            clone_children_recursively(child, clonedChild.id, session)
         except Exception as e:
             logger.error(f"Error writing cloned child item to DB: {e.__class__.__name__}: {e}")
             return []
         logger.info(f"Cloned child item written to DB: {clonedChild}")
         
-        # Recursively clone the children of the child
-        clone_children_recursively(child, clonedChild.id, session)
-
+    logger.info(f"Finished cloning children of item {itemToBeCloned} to destination parent ID {destinationParentId}.")
     return
